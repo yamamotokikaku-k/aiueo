@@ -30,6 +30,7 @@
     }
 
     *{ box-sizing:border-box; }
+
     html,body{
       margin:0;
       width:100%;
@@ -60,6 +61,14 @@
     .app{
       width:min(1200px, 100%);
       height:min(96vh, 920px);
+      display:grid;
+      grid-template-rows:auto auto 1fr auto;
+      gap:10px;
+    }
+
+    .screen{
+      position:relative;
+      min-height:0;
       display:grid;
       grid-template-rows:auto auto 1fr auto;
       gap:10px;
@@ -159,9 +168,9 @@
       box-shadow:0 4px 10px rgba(159,220,255,0.35);
     }
 
-    .center{
+    .main-area{
       display:grid;
-      grid-template-columns: minmax(0, 1.8fr) minmax(250px, 0.9fr);
+      grid-template-rows:auto auto;
       gap:10px;
       min-height:0;
     }
@@ -258,17 +267,18 @@
       transform:scale(0.96);
     }
 
-    .fingers{
+    .fingers-wrap{
       display:grid;
-      grid-template-columns:repeat(2, 1fr);
+      grid-template-columns:1fr 1fr;
       gap:10px;
+      align-items:start;
     }
 
     .hand{
       background:rgba(255,255,255,0.72);
       border:1px solid var(--line);
       border-radius:20px;
-      padding:10px;
+      padding:10px 10px 14px;
       min-height:0;
     }
 
@@ -277,48 +287,61 @@
       font-size:clamp(13px, 1.5vw, 16px);
       font-weight:800;
       color:var(--sub);
-      margin-bottom:8px;
+      margin-bottom:10px;
     }
 
-    .finger-grid{
-      display:grid;
-      grid-template-columns:repeat(5, 1fr);
-      gap:6px;
-    }
-
-    .finger{
-      aspect-ratio:1/1.15;
-      border-radius:16px;
-      border:1px solid rgba(120,120,160,0.12);
-      background:linear-gradient(180deg, #ffffff, #f8f8ff);
+    .hand-illustration{
       display:flex;
-      flex-direction:column;
-      align-items:center;
       justify-content:center;
-      text-align:center;
+      align-items:flex-end;
+      gap:6px;
+      height:92px;
+    }
+
+    .digit{
+      position:relative;
+      width:42px;
+      border-radius:18px 18px 14px 14px;
+      background:linear-gradient(180deg, #fffdfd, #eef4ff);
+      border:1px solid rgba(120,120,160,0.14);
       box-shadow:0 6px 12px rgba(137,148,182,0.08);
-      padding:4px;
-      transition:transform .08s ease, background .12s ease;
+      display:flex;
+      align-items:flex-end;
+      justify-content:center;
+      padding-bottom:10px;
+      transition:transform .08s ease, background .12s ease, box-shadow .12s ease;
     }
 
-    .finger .emoji{
-      font-size:clamp(20px, 2.3vw, 28px);
-      line-height:1;
-      margin-bottom:3px;
-    }
-
-    .finger .name{
-      font-size:clamp(10px, 1.2vw, 12px);
+    .digit .label{
+      font-size:12px;
       font-weight:800;
       color:#7b7aa0;
-      line-height:1.15;
+      letter-spacing:0.02em;
+      text-align:center;
+      line-height:1.1;
     }
 
-    .finger.active{
+    .digit.pinky{ height:64px; }
+    .digit.ring{ height:76px; }
+    .digit.middle{ height:88px; }
+    .digit.index{ height:82px; }
+    .digit.thumb{
+      height:52px;
+      width:54px;
+      border-radius:20px;
+      align-self:flex-end;
+      transform:translateY(8px);
+    }
+
+    .digit.active{
       background:linear-gradient(135deg, #ffd4e6, #dff4ff, #fff3c9);
       transform:translateY(-2px) scale(1.03);
       border-color:rgba(255,180,200,0.3);
       box-shadow:0 10px 16px rgba(160,190,230,0.16);
+    }
+
+    .digit.thumb.active{
+      transform:translateY(6px) scale(1.03);
     }
 
     .bottom{
@@ -392,29 +415,16 @@
       box-shadow:0 10px 20px rgba(150,170,200,0.2);
     }
 
-    .screen{
-      position:relative;
-      min-height:0;
-      display:grid;
-      grid-template-rows:auto auto 1fr auto;
-      gap:10px;
-    }
-
     @media (max-width: 900px){
-      .center{
+      .fingers-wrap{
         grid-template-columns:1fr;
       }
-      .finger-card{
-        padding-top:10px;
-        padding-bottom:10px;
-      }
-      .fingers{
-        grid-template-columns:1fr 1fr;
-      }
+
       .key{
         width:min(7.1vw, 50px);
         height:min(7.1vw, 50px);
       }
+
       .key.small{
         width:min(6.1vw, 42px);
         height:min(6.1vw, 42px);
@@ -425,25 +435,40 @@
       .app{
         height:98vh;
       }
+
       .question{
         min-height:145px;
       }
+
       .row{ gap:5px; }
+
       .key{
         min-width:28px;
         min-height:28px;
         border-radius:10px;
       }
+
       .key.small{
         min-width:24px;
         min-height:24px;
         border-radius:9px;
       }
-      .finger .emoji{
-        font-size:18px;
+
+      .hand-illustration{
+        gap:4px;
+        height:78px;
       }
-      .finger .name{
-        font-size:9px;
+
+      .digit{
+        width:34px;
+      }
+
+      .digit.thumb{
+        width:46px;
+      }
+
+      .digit .label{
+        font-size:10px;
       }
     }
   </style>
@@ -466,7 +491,7 @@
         <div class="progress" id="progress"></div>
       </section>
 
-      <div class="center">
+      <div class="main-area">
         <section class="keyboard-card">
           <div class="section-label">⌨️ キーボード</div>
           <div class="keyboard" id="keyboard">
@@ -510,56 +535,27 @@
 
         <section class="finger-card">
           <div class="section-label">🖐️ つかう ゆび</div>
-          <div class="fingers">
+
+          <div class="fingers-wrap">
             <div class="hand">
               <div class="hand-title">ひだりて</div>
-              <div class="finger-grid">
-                <div class="finger" data-finger="lp">
-                  <div class="emoji">🩷</div>
-                  <div class="name">こゆび</div>
-                </div>
-                <div class="finger" data-finger="lr">
-                  <div class="emoji">💛</div>
-                  <div class="name">くすり</div>
-                </div>
-                <div class="finger" data-finger="lm">
-                  <div class="emoji">💚</div>
-                  <div class="name">なか</div>
-                </div>
-                <div class="finger" data-finger="li">
-                  <div class="emoji">💙</div>
-                  <div class="name">ひとさし</div>
-                </div>
-                <div class="finger" data-finger="lt">
-                  <div class="emoji">💜</div>
-                  <div class="name">おや</div>
-                </div>
+              <div class="hand-illustration">
+                <div class="digit pinky" data-finger="lp"><div class="label">こゆび</div></div>
+                <div class="digit ring" data-finger="lr"><div class="label">くすり</div></div>
+                <div class="digit middle" data-finger="lm"><div class="label">なか</div></div>
+                <div class="digit index" data-finger="li"><div class="label">ひとさし</div></div>
+                <div class="digit thumb" data-finger="lt"><div class="label">おや</div></div>
               </div>
             </div>
 
             <div class="hand">
               <div class="hand-title">みぎて</div>
-              <div class="finger-grid">
-                <div class="finger" data-finger="rt">
-                  <div class="emoji">💜</div>
-                  <div class="name">おや</div>
-                </div>
-                <div class="finger" data-finger="ri">
-                  <div class="emoji">💙</div>
-                  <div class="name">ひとさし</div>
-                </div>
-                <div class="finger" data-finger="rm">
-                  <div class="emoji">💚</div>
-                  <div class="name">なか</div>
-                </div>
-                <div class="finger" data-finger="rr">
-                  <div class="emoji">💛</div>
-                  <div class="name">くすり</div>
-                </div>
-                <div class="finger" data-finger="rp">
-                  <div class="emoji">🩷</div>
-                  <div class="name">こゆび</div>
-                </div>
+              <div class="hand-illustration">
+                <div class="digit thumb" data-finger="rt"><div class="label">おや</div></div>
+                <div class="digit index" data-finger="ri"><div class="label">ひとさし</div></div>
+                <div class="digit middle" data-finger="rm"><div class="label">なか</div></div>
+                <div class="digit ring" data-finger="rr"><div class="label">くすり</div></div>
+                <div class="digit pinky" data-finger="rp"><div class="label">こゆび</div></div>
               </div>
             </div>
           </div>
@@ -585,18 +581,18 @@
   </div>
 
   <script>
-    // ５０音の基本練習
+    // あいうえお順固定
     const kanaList = [
       { kana:"あ", romaji:"a"  }, { kana:"い", romaji:"i"  }, { kana:"う", romaji:"u"  }, { kana:"え", romaji:"e"  }, { kana:"お", romaji:"o"  },
       { kana:"か", romaji:"ka" }, { kana:"き", romaji:"ki" }, { kana:"く", romaji:"ku" }, { kana:"け", romaji:"ke" }, { kana:"こ", romaji:"ko" },
-      { kana:"さ", romaji:"sa" }, { kana:"し", romaji:"shi"},{ kana:"す", romaji:"su" }, { kana:"せ", romaji:"se" }, { kana:"そ", romaji:"so" },
-      { kana:"た", romaji:"ta" }, { kana:"ち", romaji:"chi"},{ kana:"つ", romaji:"tsu"},{ kana:"て", romaji:"te" }, { kana:"と", romaji:"to" },
+      { kana:"さ", romaji:"sa" }, { kana:"し", romaji:"shi" }, { kana:"す", romaji:"su" }, { kana:"せ", romaji:"se" }, { kana:"そ", romaji:"so" },
+      { kana:"た", romaji:"ta" }, { kana:"ち", romaji:"chi" }, { kana:"つ", romaji:"tsu" }, { kana:"て", romaji:"te" }, { kana:"と", romaji:"to" },
       { kana:"な", romaji:"na" }, { kana:"に", romaji:"ni" }, { kana:"ぬ", romaji:"nu" }, { kana:"ね", romaji:"ne" }, { kana:"の", romaji:"no" },
       { kana:"は", romaji:"ha" }, { kana:"ひ", romaji:"hi" }, { kana:"ふ", romaji:"fu" }, { kana:"へ", romaji:"he" }, { kana:"ほ", romaji:"ho" },
       { kana:"ま", romaji:"ma" }, { kana:"み", romaji:"mi" }, { kana:"む", romaji:"mu" }, { kana:"め", romaji:"me" }, { kana:"も", romaji:"mo" },
       { kana:"や", romaji:"ya" }, { kana:"ゆ", romaji:"yu" }, { kana:"よ", romaji:"yo" },
       { kana:"ら", romaji:"ra" }, { kana:"り", romaji:"ri" }, { kana:"る", romaji:"ru" }, { kana:"れ", romaji:"re" }, { kana:"ろ", romaji:"ro" },
-      { kana:"わ", romaji:"wa" }, { kana:"を", romaji:"wo" }, { kana:"ん", romaji:"n"  }
+      { kana:"わ", romaji:"wa" }, { kana:"を", romaji:"wo" }, { kana:"ん", romaji:"n" }
     ];
 
     const fingerMap = {
@@ -620,8 +616,8 @@
     const startCover = document.getElementById("startCover");
     const startBtn = document.getElementById("startBtn");
 
-    let queue = [];
-    let current = null;
+    let currentIndex = 0;
+    let current = kanaList[0];
     let typedIndex = 0;
     let score = 0;
     let missCount = 0;
@@ -629,27 +625,19 @@
     let audioReady = false;
     let audioCtx = null;
 
-    function shuffle(array){
-      const a = [...array];
-      for(let i = a.length - 1; i > 0; i--){
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-      }
-      return a;
-    }
-
-    function refillQueue(){
-      if(queue.length === 0){
-        queue = shuffle(kanaList);
-      }
-    }
-
     function nextQuestion(){
-      refillQueue();
-      current = queue.shift();
+      current = kanaList[currentIndex];
       typedIndex = 0;
       render();
       updateHighlights();
+    }
+
+    function advanceQuestion(){
+      currentIndex++;
+      if(currentIndex >= kanaList.length){
+        currentIndex = 0;
+      }
+      nextQuestion();
     }
 
     function render(){
@@ -666,7 +654,7 @@
 
       scoreEl.textContent = score;
       missEl.textContent = missCount;
-      remainingEl.textContent = queue.length + 1;
+      remainingEl.textContent = kanaList.length - currentIndex;
     }
 
     function escapeHtml(text){
@@ -680,7 +668,8 @@
       document.querySelectorAll(".key").forEach(el=>{
         el.classList.remove("target","hit","miss");
       });
-      document.querySelectorAll(".finger").forEach(el=>{
+
+      document.querySelectorAll(".digit").forEach(el=>{
         el.classList.remove("active");
       });
     }
@@ -695,7 +684,7 @@
 
       const finger = fingerMap[needed];
       if(finger){
-        const fingerEl = document.querySelector(`.finger[data-finger="${finger}"]`);
+        const fingerEl = document.querySelector(`.digit[data-finger="${finger}"]`);
         if(fingerEl) fingerEl.classList.add("active");
       }
     }
@@ -772,7 +761,7 @@
       started = true;
       initAudio();
       startCover.style.display = "none";
-      queue = shuffle(kanaList);
+      currentIndex = 0;
       nextQuestion();
     }
 
@@ -801,7 +790,7 @@
           score++;
           render();
           setTimeout(() => {
-            nextQuestion();
+            advanceQuestion();
           }, 150);
         }
       }else{
@@ -815,10 +804,7 @@
     startBtn.addEventListener("click", startGame);
     window.addEventListener("keydown", handleKeydown);
 
-    // 最初の表示用
-    current = { kana:"あ", romaji:"a" };
-    render();
-    updateHighlights();
+    nextQuestion();
   </script>
 </body>
 </html>
