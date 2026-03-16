@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>５０音タイピングれんしゅう</title>
+  <style>
+    :root{
+      --bg1:#fff6fb;
+      --bg2:#f8fbff;
+      --bg3:#fffef3;
+      --bg4:#f4fff7;
+      --bg5:#f8f3ff;
+
+      --panel:rgba(255,255,255,0.78);
+      --panel-strong:rgba(255,255,255,0.92);
+      --line:rgba(120,120,160,0.15);
+      --text:#4e4d6c;
+      --sub:#7a7a98;
+      --accent:#ff9ac6;
+      --accent2:#8fd3ff;
+      --accent3:#b8f0a6;
+      --accent4:#ffd98a;
+      --good:#7cc7ff;
+      --miss:#ff9aa8;
+      --key:#ffffff;
+      --key-text:#5a5a79;
+      --shadow:0 12px 30px rgba(137, 148, 182, 0.16);
+      --radius:24px;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{
+      margin:0;
+      width:100%;
+      height:100%;
+      overflow:hidden;
+      font-family:
+        "Hiragino Maru Gothic ProN",
+        "Yu Gothic",
+        "Meiryo",
+        system-ui,
+        sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 10% 15%, #ffd9ec 0%, transparent 18%),
+        radial-gradient(circle at 88% 18%, #dff2ff 0%, transparent 18%),
+        radial-gradient(circle at 18% 82%, #fff0b8 0%, transparent 18%),
+        radial-gradient(circle at 82% 80%, #ddffd9 0%, transparent 18%),
+        linear-gradient(135deg, var(--bg1), var(--bg2) 28%, var(--bg3) 52%, var(--bg4) 76%, var(--bg5));
+    }
+
+    body{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:10px;
+    }
+
+    .app{
+      width:min(1200px, 100%);
+      height:min(96vh, 920px);
+      display:grid;
+      grid-template-rows:auto auto 1fr auto;
+      gap:10px;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+    }
+
+    .title{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:999px;
+      box-shadow:var(--shadow);
+      padding:10px 18px;
+      font-size:clamp(14px, 2vw, 18px);
+      font-weight:700;
+      letter-spacing:0.05em;
+      white-space:nowrap;
+    }
+
+    .status{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .chip{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:999px;
+      box-shadow:var(--shadow);
+      padding:8px 14px;
+      font-size:clamp(12px, 1.6vw, 15px);
+      font-weight:700;
+      white-space:nowrap;
+    }
+
+    .question{
+      background:linear-gradient(180deg, var(--panel-strong), var(--panel));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      padding:14px 18px 12px;
+      min-height:165px;
+      text-align:center;
+    }
+
+    .kana{
+      font-size:clamp(52px, 9vw, 96px);
+      line-height:1.05;
+      font-weight:900;
+      letter-spacing:0.08em;
+      margin-bottom:6px;
+      color:#5d5a87;
+      text-shadow:0 4px 0 rgba(255,255,255,0.6);
+    }
+
+    .romaji{
+      font-size:clamp(22px, 4vw, 40px);
+      line-height:1.15;
+      font-weight:800;
+      letter-spacing:0.12em;
+      color:#7a79a8;
+      margin-bottom:6px;
+      min-height:1.2em;
+      text-transform:lowercase;
+    }
+
+    .progress{
+      font-size:clamp(16px, 2.5vw, 24px);
+      font-weight:800;
+      letter-spacing:0.12em;
+      min-height:1.4em;
+      color:#69688a;
+      background:rgba(255,255,255,0.7);
+      border-radius:999px;
+      padding:6px 16px;
+    }
+
+    .progress .done{ color:#ff97be; }
+    .progress .next{
+      color:#ffffff;
+      background:linear-gradient(135deg, #ffb7d2, #9fdcff);
+      border-radius:10px;
+      padding:1px 8px 2px;
+      display:inline-block;
+      transform:translateY(-1px);
+      box-shadow:0 4px 10px rgba(159,220,255,0.35);
+    }
+
+    .center{
+      display:grid;
+      grid-template-columns: minmax(0, 1.8fr) minmax(250px, 0.9fr);
+      gap:10px;
+      min-height:0;
+    }
+
+    .keyboard-card,
+    .finger-card{
+      background:linear-gradient(180deg, var(--panel-strong), var(--panel));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:12px;
+      min-height:0;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
+
+    .section-label{
+      text-align:center;
+      font-size:clamp(14px, 1.8vw, 18px);
+      font-weight:800;
+      color:var(--sub);
+      margin-bottom:8px;
+      letter-spacing:0.08em;
+    }
+
+    .keyboard{
+      width:100%;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .row{
+      display:flex;
+      gap:7px;
+      justify-content:center;
+      flex-wrap:nowrap;
+    }
+
+    .key{
+      width:min(6.4vw, 58px);
+      height:min(6.4vw, 58px);
+      min-width:36px;
+      min-height:36px;
+      border-radius:14px;
+      border:1px solid rgba(120,120,160,0.13);
+      background:var(--key);
+      box-shadow:
+        inset 0 -3px 0 rgba(160,170,210,0.18),
+        0 6px 14px rgba(137,148,182,0.12);
+      color:var(--key-text);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:800;
+      font-size:clamp(16px, 2vw, 22px);
+      user-select:none;
+      transition:transform .08s ease, box-shadow .12s ease, background .12s ease;
+      text-transform:uppercase;
+    }
+
+    .key.small{
+      width:min(5.4vw, 48px);
+      height:min(5.4vw, 48px);
+      min-width:32px;
+      min-height:32px;
+      font-size:clamp(13px, 1.7vw, 18px);
+    }
+
+    .key.space{
+      width:min(28vw, 280px);
+    }
+
+    .key.target{
+      background:linear-gradient(135deg, #ffd2e5, #d8efff);
+      color:#58547f;
+      transform:translateY(-2px) scale(1.03);
+      box-shadow:
+        inset 0 -3px 0 rgba(160,170,210,0.14),
+        0 10px 18px rgba(255,170,210,0.28);
+      border-color:rgba(255,170,210,0.28);
+    }
+
+    .key.hit{
+      background:linear-gradient(135deg, #c7f0ff, #e6ffd4);
+      transform:scale(0.98);
+    }
+
+    .key.miss{
+      background:linear-gradient(135deg, #ffd7de, #ffe8ec);
+      transform:scale(0.96);
+    }
+
+    .fingers{
+      display:grid;
+      grid-template-columns:repeat(2, 1fr);
+      gap:10px;
+    }
+
+    .hand{
+      background:rgba(255,255,255,0.72);
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:10px;
+      min-height:0;
+    }
+
+    .hand-title{
+      text-align:center;
+      font-size:clamp(13px, 1.5vw, 16px);
+      font-weight:800;
+      color:var(--sub);
+      margin-bottom:8px;
+    }
+
+    .finger-grid{
+      display:grid;
+      grid-template-columns:repeat(5, 1fr);
+      gap:6px;
+    }
+
+    .finger{
+      aspect-ratio:1/1.15;
+      border-radius:16px;
+      border:1px solid rgba(120,120,160,0.12);
+      background:linear-gradient(180deg, #ffffff, #f8f8ff);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      box-shadow:0 6px 12px rgba(137,148,182,0.08);
+      padding:4px;
+      transition:transform .08s ease, background .12s ease;
+    }
+
+    .finger .emoji{
+      font-size:clamp(20px, 2.3vw, 28px);
+      line-height:1;
+      margin-bottom:3px;
+    }
+
+    .finger .name{
+      font-size:clamp(10px, 1.2vw, 12px);
+      font-weight:800;
+      color:#7b7aa0;
+      line-height:1.15;
+    }
+
+    .finger.active{
+      background:linear-gradient(135deg, #ffd4e6, #dff4ff, #fff3c9);
+      transform:translateY(-2px) scale(1.03);
+      border-color:rgba(255,180,200,0.3);
+      box-shadow:0 10px 16px rgba(160,190,230,0.16);
+    }
+
+    .bottom{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .hint{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:999px;
+      box-shadow:var(--shadow);
+      padding:8px 14px;
+      font-size:clamp(12px, 1.5vw, 15px);
+      font-weight:700;
+      color:#7d7b98;
+      text-align:center;
+    }
+
+    .start-cover{
+      position:absolute;
+      inset:0;
+      background:rgba(255,255,255,0.55);
+      backdrop-filter:blur(6px);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:10;
+      border-radius:28px;
+    }
+
+    .start-box{
+      width:min(520px, calc(100% - 24px));
+      background:linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.88));
+      border:1px solid var(--line);
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      padding:24px 20px;
+      text-align:center;
+    }
+
+    .start-title{
+      font-size:clamp(24px, 4vw, 40px);
+      font-weight:900;
+      color:#615f86;
+      margin-bottom:10px;
+      letter-spacing:0.06em;
+    }
+
+    .start-text{
+      font-size:clamp(14px, 1.9vw, 18px);
+      font-weight:700;
+      color:#8080a0;
+      line-height:1.7;
+      margin-bottom:16px;
+    }
+
+    .start-btn{
+      appearance:none;
+      border:none;
+      cursor:pointer;
+      border-radius:999px;
+      padding:14px 24px;
+      font-size:clamp(16px, 2vw, 20px);
+      font-weight:900;
+      color:#5a567e;
+      background:linear-gradient(135deg, #ffd5e8, #dff1ff, #fff0ba, #defdd5);
+      box-shadow:0 10px 20px rgba(150,170,200,0.2);
+    }
+
+    .screen{
+      position:relative;
+      min-height:0;
+      display:grid;
+      grid-template-rows:auto auto 1fr auto;
+      gap:10px;
+    }
+
+    @media (max-width: 900px){
+      .center{
+        grid-template-columns:1fr;
+      }
+      .finger-card{
+        padding-top:10px;
+        padding-bottom:10px;
+      }
+      .fingers{
+        grid-template-columns:1fr 1fr;
+      }
+      .key{
+        width:min(7.1vw, 50px);
+        height:min(7.1vw, 50px);
+      }
+      .key.small{
+        width:min(6.1vw, 42px);
+        height:min(6.1vw, 42px);
+      }
+    }
+
+    @media (max-width: 620px){
+      .app{
+        height:98vh;
+      }
+      .question{
+        min-height:145px;
+      }
+      .row{ gap:5px; }
+      .key{
+        min-width:28px;
+        min-height:28px;
+        border-radius:10px;
+      }
+      .key.small{
+        min-width:24px;
+        min-height:24px;
+        border-radius:9px;
+      }
+      .finger .emoji{
+        font-size:18px;
+      }
+      .finger .name{
+        font-size:9px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="screen">
+      <div class="topbar">
+        <div class="title">５０音タイピングれんしゅう</div>
+        <div class="status">
+          <div class="chip">せいかい: <span id="score">0</span></div>
+          <div class="chip">ミス: <span id="missCount">0</span></div>
+          <div class="chip">のこり: <span id="remaining">0</span></div>
+        </div>
+      </div>
+
+      <section class="question">
+        <div class="kana" id="kana">あ</div>
+        <div class="romaji" id="romaji">a</div>
+        <div class="progress" id="progress"></div>
+      </section>
+
+      <div class="center">
+        <section class="keyboard-card">
+          <div class="section-label">⌨️ キーボード</div>
+          <div class="keyboard" id="keyboard">
+            <div class="row">
+              <div class="key" data-key="q">Q</div>
+              <div class="key" data-key="w">W</div>
+              <div class="key" data-key="e">E</div>
+              <div class="key" data-key="r">R</div>
+              <div class="key" data-key="t">T</div>
+              <div class="key" data-key="y">Y</div>
+              <div class="key" data-key="u">U</div>
+              <div class="key" data-key="i">I</div>
+              <div class="key" data-key="o">O</div>
+              <div class="key" data-key="p">P</div>
+            </div>
+            <div class="row">
+              <div class="key" data-key="a">A</div>
+              <div class="key" data-key="s">S</div>
+              <div class="key" data-key="d">D</div>
+              <div class="key" data-key="f">F</div>
+              <div class="key" data-key="g">G</div>
+              <div class="key" data-key="h">H</div>
+              <div class="key" data-key="j">J</div>
+              <div class="key" data-key="k">K</div>
+              <div class="key" data-key="l">L</div>
+            </div>
+            <div class="row">
+              <div class="key" data-key="z">Z</div>
+              <div class="key" data-key="x">X</div>
+              <div class="key" data-key="c">C</div>
+              <div class="key" data-key="v">V</div>
+              <div class="key" data-key="b">B</div>
+              <div class="key" data-key="n">N</div>
+              <div class="key" data-key="m">M</div>
+            </div>
+            <div class="row">
+              <div class="key small space" data-key=" ">SPACE</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="finger-card">
+          <div class="section-label">🖐️ つかう ゆび</div>
+          <div class="fingers">
+            <div class="hand">
+              <div class="hand-title">ひだりて</div>
+              <div class="finger-grid">
+                <div class="finger" data-finger="lp">
+                  <div class="emoji">🩷</div>
+                  <div class="name">こゆび</div>
+                </div>
+                <div class="finger" data-finger="lr">
+                  <div class="emoji">💛</div>
+                  <div class="name">くすり</div>
+                </div>
+                <div class="finger" data-finger="lm">
+                  <div class="emoji">💚</div>
+                  <div class="name">なか</div>
+                </div>
+                <div class="finger" data-finger="li">
+                  <div class="emoji">💙</div>
+                  <div class="name">ひとさし</div>
+                </div>
+                <div class="finger" data-finger="lt">
+                  <div class="emoji">💜</div>
+                  <div class="name">おや</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="hand">
+              <div class="hand-title">みぎて</div>
+              <div class="finger-grid">
+                <div class="finger" data-finger="rt">
+                  <div class="emoji">💜</div>
+                  <div class="name">おや</div>
+                </div>
+                <div class="finger" data-finger="ri">
+                  <div class="emoji">💙</div>
+                  <div class="name">ひとさし</div>
+                </div>
+                <div class="finger" data-finger="rm">
+                  <div class="emoji">💚</div>
+                  <div class="name">なか</div>
+                </div>
+                <div class="finger" data-finger="rr">
+                  <div class="emoji">💛</div>
+                  <div class="name">くすり</div>
+                </div>
+                <div class="finger" data-finger="rp">
+                  <div class="emoji">🩷</div>
+                  <div class="name">こゆび</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="bottom">
+        <div class="hint">でる もじ を キーボードで うってね</div>
+        <div class="hint">つぎに うつ キー と ゆび が ひかるよ</div>
+      </div>
+
+      <div class="start-cover" id="startCover">
+        <div class="start-box">
+          <div class="start-title">🌈 はじめよう</div>
+          <div class="start-text">
+            キーボードを おして スタート<br>
+            ５０音を ローマじで れんしゅうできるよ
+          </div>
+          <button class="start-btn" id="startBtn">スタート</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ５０音の基本練習
+    const kanaList = [
+      { kana:"あ", romaji:"a"  }, { kana:"い", romaji:"i"  }, { kana:"う", romaji:"u"  }, { kana:"え", romaji:"e"  }, { kana:"お", romaji:"o"  },
+      { kana:"か", romaji:"ka" }, { kana:"き", romaji:"ki" }, { kana:"く", romaji:"ku" }, { kana:"け", romaji:"ke" }, { kana:"こ", romaji:"ko" },
+      { kana:"さ", romaji:"sa" }, { kana:"し", romaji:"shi"},{ kana:"す", romaji:"su" }, { kana:"せ", romaji:"se" }, { kana:"そ", romaji:"so" },
+      { kana:"た", romaji:"ta" }, { kana:"ち", romaji:"chi"},{ kana:"つ", romaji:"tsu"},{ kana:"て", romaji:"te" }, { kana:"と", romaji:"to" },
+      { kana:"な", romaji:"na" }, { kana:"に", romaji:"ni" }, { kana:"ぬ", romaji:"nu" }, { kana:"ね", romaji:"ne" }, { kana:"の", romaji:"no" },
+      { kana:"は", romaji:"ha" }, { kana:"ひ", romaji:"hi" }, { kana:"ふ", romaji:"fu" }, { kana:"へ", romaji:"he" }, { kana:"ほ", romaji:"ho" },
+      { kana:"ま", romaji:"ma" }, { kana:"み", romaji:"mi" }, { kana:"む", romaji:"mu" }, { kana:"め", romaji:"me" }, { kana:"も", romaji:"mo" },
+      { kana:"や", romaji:"ya" }, { kana:"ゆ", romaji:"yu" }, { kana:"よ", romaji:"yo" },
+      { kana:"ら", romaji:"ra" }, { kana:"り", romaji:"ri" }, { kana:"る", romaji:"ru" }, { kana:"れ", romaji:"re" }, { kana:"ろ", romaji:"ro" },
+      { kana:"わ", romaji:"wa" }, { kana:"を", romaji:"wo" }, { kana:"ん", romaji:"n"  }
+    ];
+
+    const fingerMap = {
+      q:"lp", a:"lp", z:"lp",
+      w:"lr", s:"lr", x:"lr",
+      e:"lm", d:"lm", c:"lm",
+      r:"li", t:"li", f:"li", g:"li", v:"li", b:"li",
+      y:"ri", u:"ri", h:"ri", j:"ri", n:"ri", m:"ri",
+      i:"rm", k:"rm",
+      o:"rr", l:"rr",
+      p:"rp",
+      " ":"rt"
+    };
+
+    const kanaEl = document.getElementById("kana");
+    const romajiEl = document.getElementById("romaji");
+    const progressEl = document.getElementById("progress");
+    const scoreEl = document.getElementById("score");
+    const missEl = document.getElementById("missCount");
+    const remainingEl = document.getElementById("remaining");
+    const startCover = document.getElementById("startCover");
+    const startBtn = document.getElementById("startBtn");
+
+    let queue = [];
+    let current = null;
+    let typedIndex = 0;
+    let score = 0;
+    let missCount = 0;
+    let started = false;
+    let audioReady = false;
+    let audioCtx = null;
+
+    function shuffle(array){
+      const a = [...array];
+      for(let i = a.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function refillQueue(){
+      if(queue.length === 0){
+        queue = shuffle(kanaList);
+      }
+    }
+
+    function nextQuestion(){
+      refillQueue();
+      current = queue.shift();
+      typedIndex = 0;
+      render();
+      updateHighlights();
+    }
+
+    function render(){
+      kanaEl.textContent = current.kana;
+      romajiEl.textContent = current.romaji;
+
+      const done = current.romaji.slice(0, typedIndex);
+      const next = current.romaji[typedIndex] || "";
+      const rest = current.romaji.slice(typedIndex + 1);
+
+      progressEl.innerHTML = `
+        <span class="done">${escapeHtml(done)}</span>${next ? `<span class="next">${escapeHtml(next)}</span>` : ""}<span>${escapeHtml(rest)}</span>
+      `;
+
+      scoreEl.textContent = score;
+      missEl.textContent = missCount;
+      remainingEl.textContent = queue.length + 1;
+    }
+
+    function escapeHtml(text){
+      return text
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;");
+    }
+
+    function clearHighlights(){
+      document.querySelectorAll(".key").forEach(el=>{
+        el.classList.remove("target","hit","miss");
+      });
+      document.querySelectorAll(".finger").forEach(el=>{
+        el.classList.remove("active");
+      });
+    }
+
+    function updateHighlights(){
+      clearHighlights();
+      const needed = current.romaji[typedIndex];
+      if(!needed) return;
+
+      const keyEl = document.querySelector(`.key[data-key="${cssEscape(needed)}"]`);
+      if(keyEl) keyEl.classList.add("target");
+
+      const finger = fingerMap[needed];
+      if(finger){
+        const fingerEl = document.querySelector(`.finger[data-finger="${finger}"]`);
+        if(fingerEl) fingerEl.classList.add("active");
+      }
+    }
+
+    function flashKey(key, type){
+      const keyEl = document.querySelector(`.key[data-key="${cssEscape(key)}"]`);
+      if(!keyEl) return;
+      keyEl.classList.add(type);
+      setTimeout(()=> keyEl.classList.remove(type), 120);
+    }
+
+    function cssEscape(ch){
+      if(ch === " ") return "\\ ";
+      return ch;
+    }
+
+    function initAudio(){
+      if(audioReady) return;
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      audioReady = true;
+    }
+
+    function playClick(){
+      if(!audioReady) return;
+      const now = audioCtx.currentTime;
+
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      const filter = audioCtx.createBiquadFilter();
+
+      osc.type = "square";
+      osc.frequency.setValueAtTime(1200, now);
+      osc.frequency.exponentialRampToValueAtTime(720, now + 0.03);
+
+      filter.type = "highpass";
+      filter.frequency.value = 700;
+
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.08, now + 0.005);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.045);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.05);
+    }
+
+    function playMiss(){
+      if(!audioReady) return;
+      const now = audioCtx.currentTime;
+
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = "sawtooth";
+      osc.frequency.setValueAtTime(320, now);
+      osc.frequency.exponentialRampToValueAtTime(220, now + 0.08);
+
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.05, now + 0.005);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.09);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.1);
+    }
+
+    function startGame(){
+      if(started) return;
+      started = true;
+      initAudio();
+      startCover.style.display = "none";
+      queue = shuffle(kanaList);
+      nextQuestion();
+    }
+
+    function handleKeydown(e){
+      if(!started){
+        startGame();
+      }
+
+      const key = e.key.toLowerCase();
+
+      if(!/^[a-z]$/.test(key)){
+        return;
+      }
+
+      const needed = current.romaji[typedIndex];
+      if(!needed) return;
+
+      if(key === needed){
+        playClick();
+        flashKey(key, "hit");
+        typedIndex++;
+        render();
+        updateHighlights();
+
+        if(typedIndex >= current.romaji.length){
+          score++;
+          render();
+          setTimeout(() => {
+            nextQuestion();
+          }, 150);
+        }
+      }else{
+        missCount++;
+        playMiss();
+        flashKey(key, "miss");
+        render();
+      }
+    }
+
+    startBtn.addEventListener("click", startGame);
+    window.addEventListener("keydown", handleKeydown);
+
+    // 最初の表示用
+    current = { kana:"あ", romaji:"a" };
+    render();
+    updateHighlights();
+  </script>
+</body>
+</html>
