@@ -17,11 +17,6 @@
       --line:rgba(120,120,160,0.15);
       --text:#4e4d6c;
       --sub:#7a7a98;
-      --accent:#ff9ac6;
-      --accent2:#8fd3ff;
-      --accent3:#b8f0a6;
-      --accent4:#ffd98a;
-      --good:#7cc7ff;
       --miss:#ff9aa8;
       --key:#ffffff;
       --key-text:#5a5a79;
@@ -116,13 +111,105 @@
       border:1px solid var(--line);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
+      padding:16px 18px 14px;
+      min-height:220px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      gap:8px;
+    }
+
+    .question-layout{
+      display:grid;
+      grid-template-columns:minmax(180px, 1fr) minmax(260px, auto) minmax(180px, 1fr);
+      align-items:center;
+      gap:14px;
+    }
+
+    .hand-side{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      min-height:120px;
+    }
+
+    .hand{
+      width:100%;
+      max-width:250px;
+      background:rgba(255,255,255,0.64);
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:10px 10px 14px;
+    }
+
+    .hand-title{
+      text-align:center;
+      font-size:clamp(13px, 1.5vw, 16px);
+      font-weight:800;
+      color:var(--sub);
+      margin-bottom:10px;
+    }
+
+    .hand-illustration{
+      display:flex;
+      justify-content:center;
+      align-items:flex-end;
+      gap:6px;
+      height:92px;
+    }
+
+    .digit{
+      width:42px;
+      border-radius:18px 18px 14px 14px;
+      background:linear-gradient(180deg, #fffdfd, #eef4ff);
+      border:1px solid rgba(120,120,160,0.14);
+      box-shadow:0 6px 12px rgba(137,148,182,0.08);
+      display:flex;
+      align-items:flex-end;
+      justify-content:center;
+      padding-bottom:10px;
+      transition:transform .08s ease, background .12s ease, box-shadow .12s ease;
+    }
+
+    .digit .label{
+      font-size:12px;
+      font-weight:800;
+      color:#7b7aa0;
+      letter-spacing:0.02em;
+      text-align:center;
+      line-height:1.1;
+    }
+
+    .digit.pinky{ height:64px; }
+    .digit.ring{ height:76px; }
+    .digit.middle{ height:88px; }
+    .digit.index{ height:82px; }
+    .digit.thumb{
+      height:52px;
+      width:54px;
+      border-radius:20px;
+      align-self:flex-end;
+      transform:translateY(8px);
+    }
+
+    .digit.active{
+      background:linear-gradient(135deg, #ffd4e6, #dff4ff, #fff3c9);
+      transform:translateY(-2px) scale(1.03);
+      border-color:rgba(255,180,200,0.3);
+      box-shadow:0 10px 16px rgba(160,190,230,0.16);
+    }
+
+    .digit.thumb.active{
+      transform:translateY(6px) scale(1.03);
+    }
+
+    .center-question{
       display:flex;
       flex-direction:column;
       align-items:center;
       justify-content:center;
-      padding:14px 18px 12px;
-      min-height:165px;
       text-align:center;
+      min-width:0;
     }
 
     .kana{
@@ -170,13 +257,12 @@
 
     .main-area{
       display:grid;
-      grid-template-rows:auto auto;
+      grid-template-rows:auto;
       gap:10px;
       min-height:0;
     }
 
-    .keyboard-card,
-    .finger-card{
+    .keyboard-card{
       background:linear-gradient(180deg, var(--panel-strong), var(--panel));
       border:1px solid var(--line);
       border-radius:var(--radius);
@@ -267,83 +353,6 @@
       transform:scale(0.96);
     }
 
-    .fingers-wrap{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-      align-items:start;
-    }
-
-    .hand{
-      background:rgba(255,255,255,0.72);
-      border:1px solid var(--line);
-      border-radius:20px;
-      padding:10px 10px 14px;
-      min-height:0;
-    }
-
-    .hand-title{
-      text-align:center;
-      font-size:clamp(13px, 1.5vw, 16px);
-      font-weight:800;
-      color:var(--sub);
-      margin-bottom:10px;
-    }
-
-    .hand-illustration{
-      display:flex;
-      justify-content:center;
-      align-items:flex-end;
-      gap:6px;
-      height:92px;
-    }
-
-    .digit{
-      position:relative;
-      width:42px;
-      border-radius:18px 18px 14px 14px;
-      background:linear-gradient(180deg, #fffdfd, #eef4ff);
-      border:1px solid rgba(120,120,160,0.14);
-      box-shadow:0 6px 12px rgba(137,148,182,0.08);
-      display:flex;
-      align-items:flex-end;
-      justify-content:center;
-      padding-bottom:10px;
-      transition:transform .08s ease, background .12s ease, box-shadow .12s ease;
-    }
-
-    .digit .label{
-      font-size:12px;
-      font-weight:800;
-      color:#7b7aa0;
-      letter-spacing:0.02em;
-      text-align:center;
-      line-height:1.1;
-    }
-
-    .digit.pinky{ height:64px; }
-    .digit.ring{ height:76px; }
-    .digit.middle{ height:88px; }
-    .digit.index{ height:82px; }
-    .digit.thumb{
-      height:52px;
-      width:54px;
-      border-radius:20px;
-      align-self:flex-end;
-      transform:translateY(8px);
-    }
-
-    .digit.active{
-      background:linear-gradient(135deg, #ffd4e6, #dff4ff, #fff3c9);
-      transform:translateY(-2px) scale(1.03);
-      border-color:rgba(255,180,200,0.3);
-      box-shadow:0 10px 16px rgba(160,190,230,0.16);
-    }
-
-    .digit.thumb.active{
-      transform:translateY(6px) scale(1.03);
-    }
-
     .bottom{
       display:flex;
       justify-content:center;
@@ -415,11 +424,26 @@
       box-shadow:0 10px 20px rgba(150,170,200,0.2);
     }
 
-    @media (max-width: 900px){
-      .fingers-wrap{
+    @media (max-width: 980px){
+      .question-layout{
         grid-template-columns:1fr;
+        gap:10px;
       }
 
+      .hand{
+        max-width:360px;
+      }
+
+      .hand-side{
+        min-height:auto;
+      }
+
+      .center-question{
+        order:-1;
+      }
+    }
+
+    @media (max-width: 900px){
       .key{
         width:min(7.1vw, 50px);
         height:min(7.1vw, 50px);
@@ -437,7 +461,7 @@
       }
 
       .question{
-        min-height:145px;
+        min-height:240px;
       }
 
       .row{ gap:5px; }
@@ -470,6 +494,10 @@
       .digit .label{
         font-size:10px;
       }
+
+      .hand{
+        padding:8px 8px 12px;
+      }
     }
   </style>
 </head>
@@ -486,9 +514,39 @@
       </div>
 
       <section class="question">
-        <div class="kana" id="kana">あ</div>
-        <div class="romaji" id="romaji">a</div>
-        <div class="progress" id="progress"></div>
+        <div class="question-layout">
+          <div class="hand-side">
+            <div class="hand">
+              <div class="hand-title">ひだりて</div>
+              <div class="hand-illustration">
+                <div class="digit pinky" data-finger="lp"><div class="label">こゆび</div></div>
+                <div class="digit ring" data-finger="lr"><div class="label">くすり</div></div>
+                <div class="digit middle" data-finger="lm"><div class="label">なか</div></div>
+                <div class="digit index" data-finger="li"><div class="label">ひとさし</div></div>
+                <div class="digit thumb" data-finger="lt"><div class="label">おや</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="center-question">
+            <div class="kana" id="kana">あ</div>
+            <div class="romaji" id="romaji">a</div>
+            <div class="progress" id="progress"></div>
+          </div>
+
+          <div class="hand-side">
+            <div class="hand">
+              <div class="hand-title">みぎて</div>
+              <div class="hand-illustration">
+                <div class="digit thumb" data-finger="rt"><div class="label">おや</div></div>
+                <div class="digit index" data-finger="ri"><div class="label">ひとさし</div></div>
+                <div class="digit middle" data-finger="rm"><div class="label">なか</div></div>
+                <div class="digit ring" data-finger="rr"><div class="label">くすり</div></div>
+                <div class="digit pinky" data-finger="rp"><div class="label">こゆび</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <div class="main-area">
@@ -532,34 +590,6 @@
             </div>
           </div>
         </section>
-
-        <section class="finger-card">
-          <div class="section-label">🖐️ つかう ゆび</div>
-
-          <div class="fingers-wrap">
-            <div class="hand">
-              <div class="hand-title">ひだりて</div>
-              <div class="hand-illustration">
-                <div class="digit pinky" data-finger="lp"><div class="label">こゆび</div></div>
-                <div class="digit ring" data-finger="lr"><div class="label">くすり</div></div>
-                <div class="digit middle" data-finger="lm"><div class="label">なか</div></div>
-                <div class="digit index" data-finger="li"><div class="label">ひとさし</div></div>
-                <div class="digit thumb" data-finger="lt"><div class="label">おや</div></div>
-              </div>
-            </div>
-
-            <div class="hand">
-              <div class="hand-title">みぎて</div>
-              <div class="hand-illustration">
-                <div class="digit thumb" data-finger="rt"><div class="label">おや</div></div>
-                <div class="digit index" data-finger="ri"><div class="label">ひとさし</div></div>
-                <div class="digit middle" data-finger="rm"><div class="label">なか</div></div>
-                <div class="digit ring" data-finger="rr"><div class="label">くすり</div></div>
-                <div class="digit pinky" data-finger="rp"><div class="label">こゆび</div></div>
-              </div>
-            </div>
-          </div>
-        </section>
       </div>
 
       <div class="bottom">
@@ -581,7 +611,6 @@
   </div>
 
   <script>
-    // あいうえお順固定
     const kanaList = [
       { kana:"あ", romaji:"a"  }, { kana:"い", romaji:"i"  }, { kana:"う", romaji:"u"  }, { kana:"え", romaji:"e"  }, { kana:"お", romaji:"o"  },
       { kana:"か", romaji:"ka" }, { kana:"き", romaji:"ki" }, { kana:"く", romaji:"ku" }, { kana:"け", romaji:"ke" }, { kana:"こ", romaji:"ko" },
